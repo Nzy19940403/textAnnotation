@@ -1,0 +1,1 @@
+export const BASIC_ANNOTATION_PADDING = 5;
