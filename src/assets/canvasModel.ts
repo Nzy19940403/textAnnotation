@@ -1,5 +1,6 @@
+
 import { AnnotationCollection } from './annotation-collection';
-import { MapOfList } from './list';
+import { MapOfList, ListNode } from './list';
 import { MasterImpl } from './master';
 import * as _ from 'lodash'
 export class CanvasModel extends MasterImpl {
@@ -7,6 +8,14 @@ export class CanvasModel extends MasterImpl {
   private mapOfListInstance:MapOfList
 
   private origindata:string[] = ['人工智能的定义可以分为两部分,','即“人工”和“智能”。','“人工”比较好理解,','争议性也不大。','而且有时我们会要考虑什么是人力所能及制造的，',
+  '或者人自身的智能程度有没有高到可以创造人工智能的地步，','但总的来说，','“人工系统”就是通常意义下的人工系统。',
+  '人工智能的定义可以分为两部分,','即“人工”和“智能”。','“人工”比较好理解,','争议性也不大。','而且有时我们会要考虑什么是人力所能及制造的，',
+  '或者人自身的智能程度有没有高到可以创造人工智能的地步，','但总的来说，','“人工系统”就是通常意义下的人工系统。',
+  '人工智能的定义可以分为两部分,','即“人工”和“智能”。','“人工”比较好理解,','争议性也不大。','而且有时我们会要考虑什么是人力所能及制造的，',
+  '或者人自身的智能程度有没有高到可以创造人工智能的地步，','但总的来说，','“人工系统”就是通常意义下的人工系统。',
+  '人工智能的定义可以分为两部分,','即“人工”和“智能”。','“人工”比较好理解,','争议性也不大。','而且有时我们会要考虑什么是人力所能及制造的，',
+  '或者人自身的智能程度有没有高到可以创造人工智能的地步，','但总的来说，','“人工系统”就是通常意义下的人工系统。',
+  '人工智能的定义可以分为两部分,','即“人工”和“智能”。','“人工”比较好理解,','争议性也不大。','而且有时我们会要考虑什么是人力所能及制造的，',
   '或者人自身的智能程度有没有高到可以创造人工智能的地步，','但总的来说，','“人工系统”就是通常意义下的人工系统。'];
   private formedData:any[] = []
 
@@ -34,7 +43,7 @@ export class CanvasModel extends MasterImpl {
   updateNodesMap(data:NodesMapUpdateData){
     //更新map存储的节点信息
     //返回需要替换的节点
-     
+
     let updateNodesInfo = this.mapOfListInstance.updateNodesMap(data);
 
     this.formedData
@@ -68,6 +77,15 @@ export class CanvasModel extends MasterImpl {
   renderAnnotation(){
     this.annotationCollection.initAnnotationObjectLevelMap()
     this.notify('RENDER_ANNOTATION');
+  }
+  renderAnnotationLabel(annotation:any,value:any){
+
+    let node = this.map.get(annotation.endNodeId) as ListNode;
+    node.val!.annotationObject!.LabelName = value
+    this.notify('RENDER_ANNOTATION_LABEL',{
+      annotationId:annotation.clientId,
+      nodeId:annotation.endNodeId
+    })
   }
 
   getFormedSelectionInfo(data:NodesMapUpdateData){

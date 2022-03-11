@@ -75,11 +75,11 @@ export class AnnotationCollection {
       let rightOriginNode = map.get(data[1].deleted) as ListNode;
 
       while(leftOriginNode){
-        if(leftOriginNode.val.annotationObject==undefined){
+        if(leftOriginNode.val!.annotationObject==undefined){
           maxBasicHeight = Math.max(0,maxBasicHeight)
         }else{
           maxBasicHeight = Math.max(
-            (leftOriginNode.val.annotationObject.labelIds.length)*BASIC_ANNOTATION_PADDING+ leftOriginNode.val.annotationObject.BasicHeight,
+            (leftOriginNode.val!.annotationObject.annotationIds.length)*BASIC_ANNOTATION_PADDING+ leftOriginNode.val!.annotationObject.BasicHeight - Math.max(0,leftOriginNode.val!.annotationObject.annotationIds.length-1)*1.5,
             maxBasicHeight
           )
 
@@ -99,9 +99,9 @@ export class AnnotationCollection {
         stack.push(head.id);
         //如果map之前存有listnode，那么更新listnode
         if(this.map.has(head.id)){
-          head.val.annotationObject.insertLabel(this.count)
+          head.val!.annotationObject!.insertLabel(this.count)
 
-          head.val.annotationObject.BasicHeight = maxBasicHeight;
+          head.val!.annotationObject!.BasicHeight = maxBasicHeight;
 
         }else{
           let annotationObject = new AnnotationObject(head.id,this.count);
@@ -109,7 +109,7 @@ export class AnnotationCollection {
 
           annotationObject.BasicHeight = maxBasicHeight;
 
-          head.val.annotationObject = annotationObject;
+          head.val!.annotationObject = annotationObject;
 
           this.map.set(head.id,head)
         }
@@ -131,7 +131,7 @@ export class AnnotationCollection {
       this.annotationList.push(obj)
       this.count++
      //创建了新的annotationObject
-     //寻找旧的annotationObject并改变其包含的labelid值,删除需要被替换的listnode
+     //寻找旧的annotationObject并改变其包含的annotationId值,删除需要被替换的listnode
 
     //  if(this.map.has())
 
@@ -146,20 +146,21 @@ export class AnnotationCollection {
           for(const nodeid of item.newNodes){
 
             if(this.map.has(nodeid)){
-              let tar:ListNode = this.map.get(nodeid);
-              tar.val.annotationObject.addLabel(oldNode.val.annotationObject.labelIds);
-              tar.val.annotationObject.levelMap = Object.assign({},oldNode.val.annotationObject.levelMap);
-
+              //map中存储的节点肯定会有annotationObject
+              let tar:ListNode = this.map.get(nodeid) ;
+              tar.val!.annotationObject!.addLabel(oldNode.val!.annotationObject!.annotationIds);
+              tar.val!.annotationObject!.levelMap = Object.assign({},oldNode.val!.annotationObject!.levelMap);
+              tar.val!.annotationObject!.LabelName = oldNode.val!.annotationObject!.LabelName
             }else{
               let node = map.get(nodeid);
               let annotationObject = new AnnotationObject(nodeid);
-              annotationObject.addLabel(oldNode.val.annotationObject.labelIds)
-              annotationObject.levelMap = Object.assign({},oldNode.val.annotationObject.levelMap);
-
+              annotationObject.addLabel(oldNode.val!.annotationObject!.annotationIds)
+              annotationObject.levelMap = Object.assign({},oldNode.val!.annotationObject!.levelMap);
+              annotationObject!.LabelName = oldNode.val!.annotationObject!.LabelName
 
 
               this.map.set(nodeid,node)
-              node!.val.annotationObject = annotationObject;
+              node!.val!.annotationObject = annotationObject;
             }
 
           }
@@ -178,10 +179,10 @@ export class AnnotationCollection {
 
     for(const item of this.annotationList){
       if(item.updated){
-        //这是新增的标签，寻找其head节点，查看其head到结尾节点中 ，是否有节点有多个labelid的，如有的话，需要将其一并重新计算
+        //这是新增的标签，寻找其head节点，查看其head到结尾节点中 ，是否有节点有多个annotationId的，如有的话，需要将其一并重新计算
         // let head = this.map.get(item.headNodeId);
         // while(head){
-        //   head.value.annotationObject.labelIds.forEach((id:any) => {
+        //   head.value.annotationObject.annotationIds.forEach((id:any) => {
         //     set.add(id)
         //   });
 
@@ -210,12 +211,12 @@ export class AnnotationCollection {
 
     //nodes是最终需要检测的所有listnodes的id集合
     set.sort();
- 
-    set.forEach((labelid:any) => {
+
+    set.forEach((annotationId:any) => {
       nodes.forEach((nodeid)=>{
         let node = this.map.get(nodeid) as ListNode;
 
-        node.val.annotationObject.initLevelMap(labelid)
+        node.val!.annotationObject!.initLevelMap(annotationId)
       })
     });
 
@@ -235,8 +236,8 @@ export class AnnotationCollection {
     return list;
   }
 
-  getAnnotationById(labelId:number){
-    let data = _.find(this.annotationList,{clientId:labelId})
+  getAnnotationById(annotationId:number){
+    let data = _.find(this.annotationList,{clientId:annotationId})
     return data
   }
 

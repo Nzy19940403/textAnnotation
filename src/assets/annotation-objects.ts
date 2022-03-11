@@ -3,59 +3,60 @@ import { BASIC_ANNOTATION_PADDING } from './const';
 
 export class AnnotationObject{
   domId:number
-  labelIds:number[] = [];
+  annotationIds:number[] = [];
   updated:boolean = false
 
   levelMap:any = {};
 
+  private labelName:string|null=null
   private basicHeight:number = 0;
 
-  constructor(domId:number,labelId?:number){
+  constructor(domId:number,annotationId?:number){
     this.domId = domId;
-    if(labelId!==undefined){
-      this.labelIds.push(labelId);;
+    if(annotationId!==undefined){
+      this.annotationIds.push(annotationId);;
 
     }
 
   }
 
   addLabel(ids:number[]){
-    this.labelIds = this.labelIds.concat(ids);
-    this.basicHeight = Math.max(this.basicHeight,(this.labelIds.length-1)*BASIC_ANNOTATION_PADDING)
+    this.annotationIds = this.annotationIds.concat(ids);
+    this.basicHeight = Math.max(this.basicHeight,(this.annotationIds.length-1)*BASIC_ANNOTATION_PADDING)
   }
   insertLabel(id:number){
-    this.labelIds.unshift(id);
+    this.annotationIds.unshift(id);
 
-    this.basicHeight = Math.max(this.basicHeight,(this.labelIds.length-1)*BASIC_ANNOTATION_PADDING)
+    this.basicHeight = Math.max(this.basicHeight,(this.annotationIds.length-1)*BASIC_ANNOTATION_PADDING)
   }
 
 
 
-  initLevelMap(labelId:number){
-    console.log(labelId,this)
-    if(this.labelIds.indexOf(labelId)>-1){
+  initLevelMap(annotationId:number){
+    console.log(annotationId,this)
+    if(this.annotationIds.indexOf(annotationId)>-1){
 
       let height =   BASIC_ANNOTATION_PADDING + this.basicHeight;
 
-      if(labelId==0){
-        this.levelMap[labelId] = height
+      if(annotationId==0){
+        this.levelMap[annotationId] = height
       }else{
-        let index = _.findIndex(this.labelIds,(value)=>{
-          return value == labelId
+        let index = _.findIndex(this.annotationIds,(value)=>{
+          return value == annotationId
         });
-        let len = this.labelIds.length;
+        let len = this.annotationIds.length;
 
         if(len-index==1){
-          this.levelMap[labelId] = height
+          this.levelMap[annotationId] = height
         }else{
           let sum = 0;
           //计算之前每一层的padding，新的一层需要减去他们的和
           for(let i = index+1;i<len;i++){
-            sum+=this.levelMap[this.labelIds[i]];
+            sum+=this.levelMap[this.annotationIds[i]];
           }
 
-          // this.levelMap[labelId] = height - sum - 1.5*(len-1-index)
-          this.levelMap[labelId] =  this.BasicHeight - sum + BASIC_ANNOTATION_PADDING - 1.5*(len-1-index)
+          // this.levelMap[annotationId] = height - sum - 1.5*(len-1-index)
+          this.levelMap[annotationId] =  this.BasicHeight - sum + BASIC_ANNOTATION_PADDING - 1.5*(len-1-index)
 
         }
 
@@ -66,6 +67,14 @@ export class AnnotationObject{
     }
 
 
+  }
+
+
+  set LabelName(value){
+    this.labelName = value
+  }
+  get LabelName(){
+    return this.labelName
   }
 
   set BasicHeight(value:number){

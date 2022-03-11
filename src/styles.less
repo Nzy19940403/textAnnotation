@@ -1,4 +1,10 @@
 /* You can add global styles to this file, and also import other style files */
+
+body,html{
+  height:100%;
+  margin:0;
+}
+
 #canvas{
   height: 100px;
   // background-color: #f5f5f5;
@@ -10,6 +16,7 @@
 }
 #canvas{
   width: calc( 100% - 60px );
+  height:100%;
   margin-top: 30px;
   padding: 0 30px;
   user-select: text;
@@ -20,7 +27,8 @@ body{
 }
 .sentence{
   // border: 1px solid transparent;
-
+  font-size:18px;
+  line-height:20px;
   padding: 10px 0px;
   line-height: 30px;
 }
@@ -49,6 +57,22 @@ body{
 .end{
   border-right: 1px solid rgba(251,111,111,0.5);
 }
+.labelwrapper:after{
+  content: attr(data-labelName);
+  // content:'123';
+  // color:attr(data-labelcolor);
+  // height:100%;
+  // display:inline-block;
+  // margin-left:10px;
+  // position:absolute;
+  // border-right: 1px solid rgba(251,111,111,0.5);
+}
+.labelwrapper{
+
+
+  // font-size:12px
+  // background-color:rgba(251,11,11,0.3)
+}
 .inner{
   // border:1px solid red;
   // background-color: red;
@@ -65,8 +89,12 @@ body{
   border-bottom: 1.5px solid rgba(251,111,111,0.5);
   box-sizing: border-box;
   word-wrap:normal;
+  position: relative;
+  // line-height:10px
+  background-color:rgba(251,11,11,0.3)
 
 }
 .taged>:first-child{
   margin: 10px 0px;
 }
+

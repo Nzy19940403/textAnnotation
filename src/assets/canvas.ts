@@ -25,4 +25,8 @@ export class Canvas {
     this.model.renderAnnotation();
   }
 
+  renderAnnotationLabel(annotation:any,value:any){
+    this.model.renderAnnotationLabel(annotation,value)
+  }
+
 }

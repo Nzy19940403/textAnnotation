@@ -40,6 +40,18 @@ export function findBottomChild(dom:Element|null ,attrKey?:string,attrValue?:any
     }
   }
 
+}
 
-
+export function findpseudoElementWrapper(dom:Element){
+  if(dom.children.length>0){
+    let length = dom.children.length;
+    for(let i = 0;i<length;i++){
+      if(dom.children[i].classList.contains('labelwrapper')){
+        return dom.children[i]
+      }
+    }
+    return null
+  }else{
+    return null
+  }
 }

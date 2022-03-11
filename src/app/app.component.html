@@ -1,7 +1,13 @@
-<div>
+<div style="height: 20%;">
   <div *ngFor="let item of annotations">
-    {{item.originNodeList}}
+    {{item.originNodeList}} <input #label>
+    <button (click)="makeLabel(label,item)">
+      label
+    </button>
   </div>
+
 </div>
 
-<div #wrapper></div>
+<div #wrapper style="height: 70%;">
+
+</div>

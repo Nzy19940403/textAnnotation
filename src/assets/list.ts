@@ -1,3 +1,4 @@
+import { AnnotationObject } from './annotation-objects';
 import { AnnotationCollection } from './annotation-collection';
 import { NodesMapUpdateData } from './canvasModel';
 export class MapOfList{
@@ -109,10 +110,10 @@ export class List{
       let leftNodeNext = leftNode.next;
 
       let newLeftNode1 = new ListNode({
-        data:leftNode.val.data.slice(0,data.leftNodeOffset)
+        data:leftNode.val!.data.slice(0,data.leftNodeOffset)
       },newLeftNodeId1);
       let newLeftNode2 = new ListNode({
-        data:leftNode.val.data.slice(data.leftNodeOffset)
+        data:leftNode.val!.data.slice(data.leftNodeOffset)
       },newLeftNodeId2);
 
       //先处理左边节点的情况
@@ -152,10 +153,10 @@ export class List{
       let rightNodeNext = rightNode.next;
 
       let newRightNode1 = new ListNode({
-        data:rightNode.val.data.slice(0,data.rightNodeOffset)
+        data:rightNode.val!.data.slice(0,data.rightNodeOffset)
       },newRightNodeId1);
       let newRightNode2 = new ListNode({
-        data:rightNode.val.data.slice(data.rightNodeOffset)
+        data:rightNode.val!.data.slice(data.rightNodeOffset)
       },newRightNodeId2);
 
 
@@ -215,7 +216,7 @@ export class List{
 
 
 export class ListNode {
-  private value:any = null;
+  private value:{data:any,annotationObject?:AnnotationObject|undefined}|null = null;
   private nextNode:ListNode|null = null;
   private prevNode:ListNode|null = null;
   private nodeID:number|undefined

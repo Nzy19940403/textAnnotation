@@ -4,7 +4,7 @@ import { CanvasController } from './canvasController';
 import { Listener, Master } from './master';
 import { CanvasModel, NodesMapUpdateData } from './canvasModel';
 import { fromEvent, take } from 'rxjs';
-import { findBottomChild, findTopParent } from './utils';
+import { findBottomChild, findpseudoElementWrapper, findTopParent } from './utils';
 
 interface CanvasViewInterface {
 
@@ -136,29 +136,28 @@ export class CanvasView implements CanvasViewInterface, Listener {
               // span.classList.add(`taged`);
               span.classList.add(`sentence-${element.id}`);
               span.setAttribute('data-id',`${element.id}`);
-              let level = annotationObject.labelIds.length;
+              let level = annotationObject.annotationIds.length;
               let cur = span;
               let curLevel = 0;
 
               while(level>1){
-                let labelId = annotationObject.labelIds[curLevel];
+                let annotationId = annotationObject.annotationIds[curLevel];
                 let inner = document.createElement('span');
                 inner.classList.add('inner');
-                inner.setAttribute('data-labelId',labelId);
+                inner.setAttribute('data-annotationId',annotationId);
                 cur.appendChild(inner);
                 cur = inner;
                 level--;
                 curLevel++
               }
-              let labelId = annotationObject.labelIds[curLevel];
+              let annotationId = annotationObject.annotationIds[curLevel];
               let inner = document.createElement('span');
               inner.classList.add('inner');
-              inner.setAttribute('data-labelId',labelId);
+              inner.setAttribute('data-annotationId',annotationId);
               inner.innerHTML = element.value.data
               cur.appendChild(inner);
 
-              // span.appendChild(inner);
-              // if(annotationObject.labelIds.length==1){
+              // if(annotationObject.annotationIds.length==1){
               this.canvas.insertBefore(span,curDomNode)
               // }
 
@@ -202,29 +201,29 @@ export class CanvasView implements CanvasViewInterface, Listener {
           // span.classList.add(`taged`);
           span.classList.add(`sentence-${node.id}`);
           span.setAttribute('data-id',`${node.id}`);
-          let level = annotationObject.labelIds.length;
+          let level = annotationObject.annotationIds.length;
           let cur = span;
           let curLevel = 0;
 
           while(level>1){
-            let labelId = annotationObject.labelIds[curLevel];
+            let annotationId = annotationObject.annotationIds[curLevel];
             let inner = document.createElement('span');
             inner.classList.add('inner');
-            inner.setAttribute('data-labelId',labelId);
+            inner.setAttribute('data-annotationId',annotationId);
             cur.appendChild(inner);
             cur = inner;
             level--;
             curLevel++
           }
-          let labelId = annotationObject.labelIds[curLevel];
+          let annotationId = annotationObject.annotationIds[curLevel];
           let inner = document.createElement('span');
           inner.classList.add('inner');
-          inner.setAttribute('data-labelId',labelId);
+          inner.setAttribute('data-annotationId',annotationId);
           inner.innerHTML = node.value.data
           cur.appendChild(inner);
 
           // span.appendChild(inner);
-          // if(annotationObject.labelIds.length==1){
+          // if(annotationObject.annotationIds.length==1){
           this.canvas.insertBefore(span,curDomNode)
 
           curDomNode.remove()
@@ -250,7 +249,7 @@ export class CanvasView implements CanvasViewInterface, Listener {
           }
 
           if(startNode.id==annotation.headNodeId){
-            let t = findBottomChild(dom,'data-labelid',annotation.clientId) as HTMLElement;
+            let t = findBottomChild(dom,'data-annotationId',annotation.clientId) as HTMLElement;
             if(t){
               if(t.classList.contains('head')){
 
@@ -267,15 +266,28 @@ export class CanvasView implements CanvasViewInterface, Listener {
 
           }
           if(startNode.id==annotation.endNodeId){
-           
-            let t = findBottomChild(dom,'data-labelid',annotation.clientId) as HTMLElement
+
+            let t = findBottomChild(dom,'data-annotationId',annotation.clientId) as HTMLElement
 
             if(t){
               if(t.classList.contains('end')){
 
               }else{
-                t.classList.add('end')
+                t.classList.add('end');
+                let after = document.createElement('span');
+                after.classList.add('labelwrapper');
+                t.appendChild(after)
+
+                if((startNode as ListNode).val!.annotationObject!.LabelName){
+
+                  let labelwrapper = findpseudoElementWrapper(t as Element);
+                  (labelwrapper as HTMLElement).style.color = 'blue';
+                  (labelwrapper as HTMLElement).setAttribute('data-labelName',(startNode as ListNode).val!.annotationObject!.LabelName as string)
+                }
+
+
               }
+
             }
 
 
@@ -288,7 +300,7 @@ export class CanvasView implements CanvasViewInterface, Listener {
           }
           let keys = Object.keys(startNode.value.annotationObject.levelMap)
           for(const level of keys){
-            let t = findBottomChild(dom,'data-labelid',level) as HTMLElement
+            let t = findBottomChild(dom,'data-annotationId',level) as HTMLElement
 
             // let t =  dom.childNodes[0] as HTMLElement
             t.style.paddingTop = startNode.value.annotationObject.levelMap[level]+'px'
@@ -325,6 +337,18 @@ export class CanvasView implements CanvasViewInterface, Listener {
           startNode = startNode.next
         }
       }
+    }else if(reason=='RENDER_ANNOTATION_LABEL'){
+      data
+      let dom = document.getElementsByClassName(`sentence-${data.nodeId}`)[0];
+      let span = findBottomChild(dom,'data-annotationid',data.annotationId);
+      let node = this.controller.map.get(data.nodeId) as ListNode
+      // span?.setAttribute('data-labelName',node.val!.annotationObject!.LabelName as string);
+
+      let labelwrapper = findpseudoElementWrapper(span as Element);
+      (labelwrapper as HTMLElement).style.color = 'blue';
+      (labelwrapper as HTMLElement).setAttribute('data-labelName',node.val!.annotationObject!.LabelName as string);
+
+
     }
   }
 }
