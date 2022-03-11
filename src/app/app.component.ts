@@ -49,6 +49,12 @@ export class AppComponent implements OnInit{
     this.canvas.renderAnnotationLabel(annotation,value)
 
   }
+  doConnect(data:any){
+
+    let headDom = document.getElementsByClassName(`sentence-${data.headNodeId}`)[0];
+    let headRect = headDom.getBoundingClientRect();
+    debugger
+  }
 }
 
 

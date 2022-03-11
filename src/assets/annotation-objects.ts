@@ -1,5 +1,5 @@
 import * as _ from 'lodash';
-import { BASIC_ANNOTATION_PADDING } from './const';
+import { BASIC_ANNOTATION_BORDER_WIDTH, BASIC_ANNOTATION_PADDING } from './const';
 
 export class AnnotationObject{
   domId:number
@@ -38,7 +38,7 @@ export class AnnotationObject{
 
       let height =   BASIC_ANNOTATION_PADDING + this.basicHeight;
 
-      if(annotationId==0){
+      if(this.annotationIds.length==1){
         this.levelMap[annotationId] = height
       }else{
         let index = _.findIndex(this.annotationIds,(value)=>{
@@ -56,7 +56,7 @@ export class AnnotationObject{
           }
 
           // this.levelMap[annotationId] = height - sum - 1.5*(len-1-index)
-          this.levelMap[annotationId] =  this.BasicHeight - sum + BASIC_ANNOTATION_PADDING - 1.5*(len-1-index)
+          this.levelMap[annotationId] =  this.BasicHeight - sum + BASIC_ANNOTATION_PADDING - BASIC_ANNOTATION_BORDER_WIDTH*(len-1-index)
 
         }
 

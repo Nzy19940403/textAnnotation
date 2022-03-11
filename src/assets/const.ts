@@ -1,1 +1,2 @@
 export const BASIC_ANNOTATION_PADDING = 5;
+export const BASIC_ANNOTATION_BORDER_WIDTH = 1.5;

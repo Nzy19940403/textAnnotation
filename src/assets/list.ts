@@ -93,9 +93,77 @@ export class List{
   }
 
   updateNodesMap(data:NodesMapUpdateData):any[]{
-
+     
     if(data.leftNodeId==data.rightNodeId){
-      return []
+      let leftNode = this.map.get(data.leftNodeId) as ListNode;
+      let newLeftNodeId1 = this.count++;
+      let newLeftNodeId2 = this.count++;
+      let newLeftNodeId3 = this.count++;
+
+      let newLeftNode1 = new ListNode({
+        data:leftNode.val!.data.slice(0,data.leftNodeOffset)
+      },newLeftNodeId1);
+
+      let newLeftNode2 = new ListNode({
+        data:leftNode.val!.data.slice(data.leftNodeOffset,data.rightNodeOffset)
+      },newLeftNodeId2);
+
+      let newLeftNode3 = new ListNode({
+        data:leftNode.val!.data.slice(data.rightNodeOffset)
+      },newLeftNodeId3);
+
+      let leftNodePrev = leftNode.prev;
+      let leftNodeNext = leftNode.next;
+
+      if(leftNodePrev){
+        //原节点有前置节点
+        leftNodePrev.next = newLeftNode1;
+        newLeftNode1.prev = leftNodePrev
+
+        newLeftNode1.next = newLeftNode2;
+        newLeftNode2.prev = newLeftNode1;
+
+        newLeftNode2.next = newLeftNode3;
+        newLeftNode3.prev = newLeftNode2;
+
+        if(leftNodeNext){
+          newLeftNode3.next = leftNodeNext;
+          leftNodeNext.prev = newLeftNode3
+        }else{
+          newLeftNode3.next = null;
+        }
+
+      }else{
+        //原节点没有前置节点
+
+        newLeftNode1.prev = null;
+
+        newLeftNode1.next = newLeftNode2;
+        newLeftNode2.prev = newLeftNode1;
+
+        newLeftNode2.next = newLeftNode3;
+        newLeftNode3.prev = newLeftNode2;
+
+        if(leftNodeNext){
+          newLeftNode3.next = leftNodeNext;
+          leftNodeNext.prev = newLeftNode3
+        }else{
+          newLeftNode3.next = null;
+        }
+
+      }
+
+
+      this.map.set(newLeftNodeId1,newLeftNode1);
+      this.map.set(newLeftNodeId2,newLeftNode2);
+      this.map.set(newLeftNodeId3,newLeftNode3);
+
+      return [
+        {
+          deleted:data.leftNodeId,
+          newNodes:[newLeftNodeId1,newLeftNodeId2,newLeftNodeId3]
+        }
+      ]
     }else{
       let leftNode = this.map.get(data.leftNodeId) as ListNode;
       let rightNode = this.map.get(data.rightNodeId) as ListNode;

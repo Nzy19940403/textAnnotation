@@ -16,7 +16,8 @@ export class CanvasModel extends MasterImpl {
   '人工智能的定义可以分为两部分,','即“人工”和“智能”。','“人工”比较好理解,','争议性也不大。','而且有时我们会要考虑什么是人力所能及制造的，',
   '或者人自身的智能程度有没有高到可以创造人工智能的地步，','但总的来说，','“人工系统”就是通常意义下的人工系统。',
   '人工智能的定义可以分为两部分,','即“人工”和“智能”。','“人工”比较好理解,','争议性也不大。','而且有时我们会要考虑什么是人力所能及制造的，',
-  '或者人自身的智能程度有没有高到可以创造人工智能的地步，','但总的来说，','“人工系统”就是通常意义下的人工系统。'];
+  '或者人自身的智能程度有没有高到可以创造人工智能的地步，','但总的来说，','“人工系统”就是通常意义下的人工系统。'
+  ];
   private formedData:any[] = []
 
   private annotationCollection:AnnotationCollection
@@ -62,12 +63,13 @@ export class CanvasModel extends MasterImpl {
       });
 
     })
+
+
     let created = this.annotationCollection.getCreated()
 
     //更新dom节点，删除并替换操作
     this.notify('UPDATE_NODES',{updateNodesInfo,created})
-    // console.log(this.mapOfList)
-    // console.log(this.annotationCollection)
+
   }
   // updateAnnotation(){
   //   this.annotationCollection
@@ -106,6 +108,7 @@ export class CanvasModel extends MasterImpl {
       };
       return res;
     }
+
     return data
   }
 

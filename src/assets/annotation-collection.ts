@@ -58,6 +58,99 @@ export class AnnotationCollection {
 
     if(data.length==1){
       //切割的句子是同一句子的情况
+      let startNodeId = data[0].newNodes[1]
+      let startNode = map.get(startNodeId) as ListNode;
+      let head:ListNode|null = startNode;
+      let stack:number[] = [];
+
+      let maxBasicHeight = 0;
+      let originNode = map.get(data[0].deleted) as ListNode|null;
+
+      while(originNode){
+        if(originNode.val?.annotationObject==undefined){
+          maxBasicHeight = Math.max(0,maxBasicHeight);
+        }else{
+          maxBasicHeight = Math.max(
+            BASIC_ANNOTATION_PADDING + originNode.val.annotationObject.BasicHeight,
+            maxBasicHeight
+          )
+        }
+        if(originNode.id==originNode.id){
+          break
+        }
+
+        if(originNode.id == originNode.next?.id){
+          break
+        }
+
+        originNode = originNode.next;
+      }
+
+
+
+      stack.push(head.id);
+      if(this.map.has(head.id)){
+        head.val!.annotationObject!.insertLabel(this.count)
+
+        head.val!.annotationObject!.BasicHeight = maxBasicHeight;
+
+      }else{
+        let annotationObject = new AnnotationObject(head.id,this.count);
+
+
+        annotationObject.BasicHeight = maxBasicHeight;
+
+        head.val!.annotationObject = annotationObject;
+
+        this.map.set(head.id,head);
+        // map.set(head.id,head);
+      }
+
+      let obj = {
+        headNodeId:startNode?.id,
+        endNodeId:startNode.id,
+        originNodeList:stack.slice(),
+        sortedNodeList:stack.sort((x,y)=>x-y) ,
+        clientId:this.count,
+        updated:true
+      }
+      this.annotationList.push(obj)
+      this.count++
+
+      data.forEach(item=>{
+
+        if(this.map.has(item.deleted)){
+          this.count
+          // let node = this.map.get(item.deleted);
+          //删除旧节点，判断新增节点需要继承的信息
+          let oldNode:ListNode = this.map.get(item.deleted)
+
+          for(const nodeid of item.newNodes){
+
+            if(this.map.has(nodeid)){
+              //map中存储的节点肯定会有annotationObject
+              let tar:ListNode = this.map.get(nodeid) ;
+              tar.val!.annotationObject!.addLabel(oldNode.val!.annotationObject!.annotationIds);
+              tar.val!.annotationObject!.levelMap = Object.assign({},oldNode.val!.annotationObject!.levelMap);
+              tar.val!.annotationObject!.LabelName = oldNode.val!.annotationObject!.LabelName
+            }else{
+              let node = map.get(nodeid);
+              let annotationObject = new AnnotationObject(nodeid);
+              annotationObject.addLabel(oldNode.val!.annotationObject!.annotationIds)
+              annotationObject.levelMap = Object.assign({},oldNode.val!.annotationObject!.levelMap);
+              annotationObject!.LabelName = oldNode.val!.annotationObject!.LabelName
+
+
+              this.map.set(nodeid,node)
+              node!.val!.annotationObject = annotationObject;
+            }
+
+          }
+          this.map.delete(item.deleted);
+        }
+      });
+
+
     }else{
       //切割句子为不同句子的时候
 
@@ -74,24 +167,48 @@ export class AnnotationCollection {
       let leftOriginNode = map.get(data[0].deleted) as ListNode|null;
       let rightOriginNode = map.get(data[1].deleted) as ListNode;
 
+       
       while(leftOriginNode){
         if(leftOriginNode.val!.annotationObject==undefined){
           maxBasicHeight = Math.max(0,maxBasicHeight)
         }else{
           maxBasicHeight = Math.max(
-            (leftOriginNode.val!.annotationObject.annotationIds.length)*BASIC_ANNOTATION_PADDING+ leftOriginNode.val!.annotationObject.BasicHeight - Math.max(0,leftOriginNode.val!.annotationObject.annotationIds.length-1)*1.5,
+            // (leftOriginNode.val!.annotationObject.annotationIds.length)*
+            BASIC_ANNOTATION_PADDING+ leftOriginNode.val!.annotationObject.BasicHeight
+            // - Math.max(0,leftOriginNode.val!.annotationObject.annotationIds.length-1)*1.5
+            ,
             maxBasicHeight
           )
 
         }
 
-        if(leftOriginNode.id==rightOriginNode.id){
+        // if(leftOriginNode.id==endNodeId){
+        //   break
+        // }
+        //endnodeid是新生成的id,rightOriginNode是要被删除的节点，如果endnodeid不等于rightnodeid那么会一直便利下去直到为null，这里限制便利到rightnodeid的后一位节点
+
+        if(leftOriginNode.id==rightOriginNode.id || leftOriginNode.id == rightOriginNode.next?.id){
+
+          if(rightOriginNode.val?.annotationObject){
+            maxBasicHeight = Math.max(
+              // (leftOriginNode.val!.annotationObject.annotationIds.length)*
+              BASIC_ANNOTATION_PADDING+ rightOriginNode.val!.annotationObject!.BasicHeight
+              // - Math.max(0,leftOriginNode.val!.annotationObject.annotationIds.length-1)*1.5
+              ,
+              maxBasicHeight
+            )
+          }
+
+
           break
         }
 
+        // if(leftOriginNode.id == rightOriginNode.next?.id){
+        //   break
+        // }
+
         leftOriginNode = leftOriginNode.next;
       }
-
 
 
 ///////////////////////////////////////////////////////////
@@ -111,7 +228,8 @@ export class AnnotationCollection {
 
           head.val!.annotationObject = annotationObject;
 
-          this.map.set(head.id,head)
+          this.map.set(head.id,head);
+          // map.set(head.id,head);
         }
 
 

@@ -1,8 +1,11 @@
-<div style="height: 20%;">
+<div style="height: 20%;overflow: auto;">
   <div *ngFor="let item of annotations">
     {{item.originNodeList}} <input #label>
     <button (click)="makeLabel(label,item)">
-      label
+      label{{item.clientId}}
+    </button>
+    <button (click)="doConnect(item)">
+      connect
     </button>
   </div>
 

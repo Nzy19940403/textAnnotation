@@ -101,10 +101,6 @@ export class CanvasView implements CanvasViewInterface, Listener {
         span.classList.add(`sentence`);
         span.classList.add(`sentence-${item.index}`);
         span.setAttribute('data-id', `${item.index}`);
-      //   let inner = document.createElement('span');
-      //   inner.innerHTML = item.value;
-      // // inner.style.display ='inline-block';
-      //   inner.classList.add('inner')
 
 
       //   span.appendChild(inner)
@@ -116,6 +112,64 @@ export class CanvasView implements CanvasViewInterface, Listener {
       //这一步完成渲染标注之前的预处理，将调整节点的结构
       if (data.updateNodesInfo.length == 1) {
         //切割一句的情况
+
+
+        for(const item of data.updateNodesInfo){
+          let curDomNode = document.getElementsByClassName(`sentence-${item.deleted}`)[0];
+          item.newNodes.forEach((element:any) => {
+
+            // let start = element
+
+
+            if(element.value.annotationObject!==undefined){
+              let annotationObject = element.value.annotationObject;
+
+              let span = document.createElement('span');
+              span.classList.add(`sentence`);
+              // span.classList.add(`taged`);
+              span.classList.add(`sentence-${element.id}`);
+              span.setAttribute('data-id',`${element.id}`);
+              let level = annotationObject.annotationIds.length;
+              let cur = span;
+              let curLevel = 0;
+
+              while(level>1){
+                let annotationId = annotationObject.annotationIds[curLevel];
+                let inner = document.createElement('span');
+                inner.classList.add('inner');
+                inner.setAttribute('data-annotationId',annotationId);
+                cur.appendChild(inner);
+                cur = inner;
+                level--;
+                curLevel++
+              }
+              let annotationId = annotationObject.annotationIds[curLevel];
+              let inner = document.createElement('span');
+              inner.classList.add('inner');
+              inner.setAttribute('data-annotationId',annotationId);
+              inner.innerHTML = element.value.data
+              cur.appendChild(inner);
+
+              // if(annotationObject.annotationIds.length==1){
+              this.canvas.insertBefore(span,curDomNode)
+              // }
+
+
+            }else{
+              let span = document.createElement('span');
+              span.classList.add(`sentence`);
+              span.classList.add(`sentence-${element.id}`);
+              span.setAttribute('data-id',`${element.id}`)
+              span.innerHTML = element.value.data
+
+              this.canvas.insertBefore(span,curDomNode)
+
+            }
+
+          });
+          curDomNode.remove();
+        }
+
       } else {
         //切割多句的情况
 
@@ -168,11 +222,6 @@ export class CanvasView implements CanvasViewInterface, Listener {
               span.classList.add(`sentence-${element.id}`);
               span.setAttribute('data-id',`${element.id}`)
               span.innerHTML = element.value.data
-              // let inner = document.createElement('span');
-              // inner.innerHTML = element.value.data;
-              // // inner.style.display ='inline-block';
-              // inner.classList.add('inner')
-              // span.appendChild(inner);
 
               this.canvas.insertBefore(span,curDomNode)
 
@@ -258,11 +307,6 @@ export class CanvasView implements CanvasViewInterface, Listener {
               }
             }
 
-            // if(dom.classList.contains('head')){
-
-            // }else{
-            //   dom.classList.add('head')
-            // }
 
           }
           if(startNode.id==annotation.endNodeId){
@@ -291,11 +335,6 @@ export class CanvasView implements CanvasViewInterface, Listener {
             }
 
 
-            // if(dom.classList.contains('end')){
-
-            // }else{
-            //   dom.classList.add('end')
-            // }
 
           }
           let keys = Object.keys(startNode.value.annotationObject.levelMap)
@@ -307,27 +346,6 @@ export class CanvasView implements CanvasViewInterface, Listener {
             t.style.paddingBottom = startNode.value.annotationObject.levelMap[level]+'px'
             // t.style.lineHeight = 30+'px'
           }
-
-          // let level= startNode.value.annotationObject.levelMap[annotation.clientId];
-          // debugger
-          // if(level!==undefined){
-
-          //   let t = findBottomChild(dom) as HTMLElement
-
-          //   // let t =  dom.childNodes[0] as HTMLElement
-          //   t.style.paddingTop = (level+1)*10+'px'
-          //   t.style.paddingBottom = (level+1)*10+'px'
-          //   // t.style.lineHeight = (level+1)*30+'px';
-          //   // t.style.borderTop = '1.5px solid rgba(251,111,111,0.5)';
-          //   // t.style.borderBottom = '1.5px solid rgba(251,111,111,0.5)';
-
-          //   // dom.style.paddingTop = (level+1)*10+'px'
-          //   // dom.style.paddingBottom = (level+1)*10+'px'
-          //   // // dom.style.height = (level+1)*50+'px';
-          //   // dom.style.lineHeight = (level+1)*30+'px';
-          //   // // dom.style.borderTop = '1px solid rgba(251,111,111,0.5)';
-          //   // // dom.style.borderBottom = '1px solid rgba(251,111,111,0.5)';
-          // }
 
 
           if(startNode.id==endNode.id){
