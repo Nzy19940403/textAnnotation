@@ -1,16 +1,49 @@
-<div style="height: 20%;overflow: auto;">
-  <div *ngFor="let item of annotations">
-    {{item.originNodeList}} <input #label>
-    <button (click)="makeLabel(label,item)">
-      label{{item.clientId}}
-    </button>
-    <button (click)="doConnect(item)">
-      connect
-    </button>
+
+
+
+<div id="container">
+  <div id="editor-wrapper">
+    <div id="toolbar">
+      <div style="width: 50%;">
+        <mat-chip-list >
+          <mat-chip *ngFor="let label of labels" [color]="label.color" selected (click)="changeRememberLabel(label)">
+            {{label.name}}
+          </mat-chip>
+        </mat-chip-list>
+      </div>
+      <div>
+        当前选择标签
+        <mat-chip *ngIf="canvas.rememberLabel">
+          {{canvas.rememberLabel}}
+        </mat-chip>
+
+      </div>
+    </div>
+    <div #editor >
+
+    </div>
   </div>
+  <div style="overflow: auto;width: 30%;">
 
-</div>
+    <mat-card *ngFor="let item of annotations;trackBy: trackFunc" style="margin: 30px;" >
+      <div>
+        <span>{{joinSpan(item.originNodeList)}}</span>
+      </div>
 
-<div #wrapper style="height: 70%;">
 
+
+      <mat-form-field>
+        <mat-select [value]="item.value" placeholder="选择标签" (valueChange)="makeLabel( $event,item)">
+          <mat-option [value]="null">空</mat-option>
+          <mat-option *ngFor="let label of labels" [value]="label.name">
+            {{label.name}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <!-- <button (click)="doConnect(item)">
+        connect
+      </button> -->
+    </mat-card>
+  </div>
 </div>

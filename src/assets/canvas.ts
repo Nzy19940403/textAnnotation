@@ -25,8 +25,23 @@ export class Canvas {
     this.model.renderAnnotation();
   }
 
-  renderAnnotationLabel(annotation:any,value:any){
-    this.model.renderAnnotationLabel(annotation,value)
+  renderCertainAnnotationLabel(annotation:any,value:any){
+    this.model.renderCertainAnnotationLabel(annotation,value)
+  }
+  joinSpan(list:any[]){
+    return this.model.joinSpan(list)
+  }
+
+  setupLabels(data:any[]){
+    this.model.setupLabels(data)
+  }
+
+  setRememberLabel(value:any){
+    this.model.rememberLabel = value
+  }
+
+  get rememberLabel(){
+    return this.model.rememberLabel
   }
 
 }

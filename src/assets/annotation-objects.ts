@@ -56,7 +56,8 @@ export class AnnotationObject{
           }
 
           // this.levelMap[annotationId] = height - sum - 1.5*(len-1-index)
-          this.levelMap[annotationId] =  this.BasicHeight - sum + BASIC_ANNOTATION_PADDING - BASIC_ANNOTATION_BORDER_WIDTH*(len-1-index)
+          //basicheight减去之前sum完成的高度，然后加上本次的高度再减去这些线的宽度
+          this.levelMap[annotationId] =  this.BasicHeight - sum + BASIC_ANNOTATION_PADDING - BASIC_ANNOTATION_BORDER_WIDTH * (len-1-index)
 
         }
 

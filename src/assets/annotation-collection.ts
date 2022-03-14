@@ -1,5 +1,5 @@
 import { ListNode } from './list';
-import { NodesMapUpdateData } from './canvasModel';
+import { CanvasModel, NodesMapUpdateData } from './canvasModel';
 import { AnnotationObject } from './annotation-objects';
 import * as _ from 'lodash'
 import { BASIC_ANNOTATION_PADDING } from './const';
@@ -8,8 +8,9 @@ export class AnnotationCollection {
   private annotationList:any[] = [];
   private map = new Map();
   private count:number = 0;
-  constructor(){
-
+  model:CanvasModel
+  constructor(model:CanvasModel){
+    this.model = model;
   }
   updateAnnotation(data:any[],map:Map<number,ListNode>){
 
@@ -96,7 +97,8 @@ export class AnnotationCollection {
 
       }else{
         let annotationObject = new AnnotationObject(head.id,this.count);
-
+        //将上次选中的标签赋值给新的标签
+        annotationObject.LabelName = this.model.rememberLabel;
 
         annotationObject.BasicHeight = maxBasicHeight;
 
@@ -112,7 +114,8 @@ export class AnnotationCollection {
         originNodeList:stack.slice(),
         sortedNodeList:stack.sort((x,y)=>x-y) ,
         clientId:this.count,
-        updated:true
+        updated:true,
+        value:this.model.rememberLabel
       }
       this.annotationList.push(obj)
       this.count++
@@ -167,7 +170,7 @@ export class AnnotationCollection {
       let leftOriginNode = map.get(data[0].deleted) as ListNode|null;
       let rightOriginNode = map.get(data[1].deleted) as ListNode;
 
-       
+
       while(leftOriginNode){
         if(leftOriginNode.val!.annotationObject==undefined){
           maxBasicHeight = Math.max(0,maxBasicHeight)
@@ -222,7 +225,7 @@ export class AnnotationCollection {
 
         }else{
           let annotationObject = new AnnotationObject(head.id,this.count);
-
+          annotationObject.LabelName = this.model.rememberLabel;
 
           annotationObject.BasicHeight = maxBasicHeight;
 
@@ -244,7 +247,8 @@ export class AnnotationCollection {
         originNodeList:stack.slice(),
         sortedNodeList:stack.sort((x,y)=>x-y) ,
         clientId:this.count,
-        updated:true
+        updated:true,
+        value:this.model.rememberLabel
       }
       this.annotationList.push(obj)
       this.count++

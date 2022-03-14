@@ -325,7 +325,7 @@ export class CanvasView implements CanvasViewInterface, Listener {
                 if((startNode as ListNode).val!.annotationObject!.LabelName){
 
                   let labelwrapper = findpseudoElementWrapper(t as Element);
-                  (labelwrapper as HTMLElement).style.color = 'blue';
+                  // (labelwrapper as HTMLElement).style.color = 'blue';
                   (labelwrapper as HTMLElement).setAttribute('data-labelName',(startNode as ListNode).val!.annotationObject!.LabelName as string)
                 }
 
@@ -356,15 +356,22 @@ export class CanvasView implements CanvasViewInterface, Listener {
         }
       }
     }else if(reason=='RENDER_ANNOTATION_LABEL'){
-      data
+
       let dom = document.getElementsByClassName(`sentence-${data.nodeId}`)[0];
       let span = findBottomChild(dom,'data-annotationid',data.annotationId);
       let node = this.controller.map.get(data.nodeId) as ListNode
       // span?.setAttribute('data-labelName',node.val!.annotationObject!.LabelName as string);
 
       let labelwrapper = findpseudoElementWrapper(span as Element);
-      (labelwrapper as HTMLElement).style.color = 'blue';
-      (labelwrapper as HTMLElement).setAttribute('data-labelName',node.val!.annotationObject!.LabelName as string);
+      // (labelwrapper as HTMLElement).style.color = 'blue';
+
+      if(node.val!.annotationObject!.LabelName){
+
+        (labelwrapper as HTMLElement).setAttribute('data-labelName',node.val!.annotationObject!.LabelName as string);
+      }else{
+        (labelwrapper as HTMLElement).removeAttribute('data-labelName')
+      }
+
 
 
     }

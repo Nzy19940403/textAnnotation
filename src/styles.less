@@ -15,9 +15,10 @@ body,html{
   color: red;
 }
 #canvas{
-  width: calc( 100% - 60px );
-  height:100%;
-  margin-top: 30px;
+  width: 100%;
+  box-sizing: border-box;
+  // height: calc( 100% - 30px );
+  // margin-top: 30px;
   padding: 0 30px;
   user-select: text;
 }
@@ -54,6 +55,11 @@ body{
 .end{
   border-right: 1px solid rgba(251,111,111,0.5);
 }
+.labelwrapper{
+  line-height: 20px;
+  font-size: 14px;
+  color:blue;
+}
 .labelwrapper:after{
   content: attr(data-labelName);
   // content:'123';
@@ -64,12 +70,7 @@ body{
   // position:absolute;
   // border-right: 1px solid rgba(251,111,111,0.5);
 }
-// .labelwrapper{
 
-
-//   // font-size:12px
-//   // background-color:rgba(251,11,11,0.3)
-// }
 .inner{
   // border:1px solid red;
   // background-color: red;
@@ -82,16 +83,20 @@ body{
   // border-bottom:  1px solid rgba(251,111,111,1);
   // padding:10px 0px;
   display: inline-block;
-  border-top: 1.5px solid rgba(251,111,111,0.5);
-  border-bottom: 1.5px solid rgba(251,111,111,0.5);
+  border-top:2px solid rgba(251,111,111,0.5);
+  border-bottom: 2px solid rgba(251,111,111,0.5);
   box-sizing: border-box;
   word-wrap:normal;
   position: relative;
   // line-height:10px
-  background-color:rgba(251,11,11,0.3)
+  background-color:rgba(251,11,11,0.3);
+  cursor: pointer;
 
 }
 .taged>:first-child{
   margin: 10px 0px;
 }
 
+
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }

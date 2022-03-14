@@ -20,12 +20,17 @@ export class CanvasModel extends MasterImpl {
   ];
   private formedData:any[] = []
 
+  private labels:any[] = []
+
   private annotationCollection:AnnotationCollection
+
+  //后面要移出model中，放在store里记录，model创建出来的东西，以自定义时间发送至angular组件中，调用相关方法组合生成相应的标注信息，再放回canvas中调用renderAnnotation方法
+  private recentLabel:any = null
 
   constructor(){
     super();
 
-    this.annotationCollection = new AnnotationCollection();
+    this.annotationCollection = new AnnotationCollection(this);
     this.mapOfListInstance = new MapOfList(this.origindata,this.annotationCollection);
     this.mapOfList = this.mapOfListInstance.getMap();
 
@@ -36,6 +41,11 @@ export class CanvasModel extends MasterImpl {
   setup(){
     this.makeFormedData()
   }
+
+  setupLabels(data:any[]){
+    this.labels = this.labels.concat(data)
+  }
+
   makeFormedData(){
     this.formedData = this.mapOfListInstance.getFormedData();
 
@@ -80,7 +90,7 @@ export class CanvasModel extends MasterImpl {
     this.annotationCollection.initAnnotationObjectLevelMap()
     this.notify('RENDER_ANNOTATION');
   }
-  renderAnnotationLabel(annotation:any,value:any){
+  renderCertainAnnotationLabel(annotation:any,value:any){
 
     let node = this.map.get(annotation.endNodeId) as ListNode;
     node.val!.annotationObject!.LabelName = value
@@ -112,6 +122,16 @@ export class CanvasModel extends MasterImpl {
     return data
   }
 
+  joinSpan(list:any[]):string{
+    let str = '';
+    for(const id of list){
+      let data = this.map.get(id);
+      str += data.value.data;
+
+    }
+    return str;
+  }
+
   get exported(){
     return this.annotationCollection.exported
   }
@@ -126,6 +146,15 @@ export class CanvasModel extends MasterImpl {
   get collection (){
     return this.annotationCollection
   }
+
+  get rememberLabel (){
+    return this.recentLabel
+  }
+
+  set rememberLabel(value){
+    this.recentLabel = value
+  }
+
 }
 
 
